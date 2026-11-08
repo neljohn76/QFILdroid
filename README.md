@@ -1,2 +1,2 @@
-# ${\color{red}\text{QFIL}}$droid
+# QFILdroid
 No-PC required, QFIL implementation to Android
