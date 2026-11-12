@@ -287,7 +287,7 @@ object UsbHostManager {
 
     private fun endpointTypeName(type: Int): String = when (type) {
         UsbConstants.USB_ENDPOINT_XFER_CONTROL -> "control"
-        UsbConstants.USB_ENDPOINT_XFER_ISOCHRONOUS -> "isochronous"
+        UsbConstants.USB_ENDPOINT_XFER_ISOCRONOUS -> "isochronous"
         UsbConstants.USB_ENDPOINT_XFER_BULK -> "bulk"
         UsbConstants.USB_ENDPOINT_XFER_INT -> "interrupt"
         else -> "unknown"
