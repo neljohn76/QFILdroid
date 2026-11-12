@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 import '../models/log_entry.dart';
 import '../providers/device_provider.dart';
 import '../services/log_service.dart';
+
 
 /// Diagnostic log viewer with category filter and export.
 class LogsScreen extends StatefulWidget {

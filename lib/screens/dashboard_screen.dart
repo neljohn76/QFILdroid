@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../app/theme.dart';
 import '../models/connection_stage.dart';
 import '../models/log_entry.dart';
@@ -8,6 +7,7 @@ import '../providers/device_provider.dart';
 import '../services/log_service.dart';
 import '../widgets/info_row.dart';
 import '../widgets/status_badge.dart';
+
 
 /// Technician dashboard: connection state, device info, EDL detection and
 /// recent diagnostics.

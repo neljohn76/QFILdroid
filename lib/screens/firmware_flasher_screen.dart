@@ -2,15 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../app/theme.dart';
 import '../models/firmware/flash_plan.dart';
+import '../models/firmware/storage_info.dart';
+import '../models/log_entry.dart';
 import '../providers/device_provider.dart';
 import '../services/firmware/xml_parser.dart';
 import '../services/flash_planner.dart';
-import '../models/log_entry.dart';
 import '../services/log_service.dart';
-import '../models/firmware/storage_info.dart';
+
 
 /// Staged firmware flashing workflow.
 ///

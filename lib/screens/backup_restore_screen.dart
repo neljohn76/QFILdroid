@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../app/theme.dart';
-import '../providers/device_provider.dart';
-import '../services/firehose_commands.dart';
 import '../models/log_entry.dart';
+import '../providers/device_provider.dart';
 import '../services/log_service.dart';
+
 
 /// Backup & Restore: partition readback planning with validation.
 ///

@@ -1,14 +1,13 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../app/theme.dart';
 import '../models/firmware/firmware_package.dart';
-import '../providers/device_provider.dart';
-import '../services/firmware/firmware_inspector.dart';
 import '../models/log_entry.dart';
+import '../services/firmware/firmware_inspector.dart';
 import '../services/log_service.dart';
 import '../widgets/info_row.dart';
+
 
 /// Firmware Manager: package inspection screen (directory or ZIP).
 ///

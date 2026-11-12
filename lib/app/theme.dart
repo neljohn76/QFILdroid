@@ -40,7 +40,7 @@ class QfildroidTheme {
           TextStyle(fontSize: 11, color: Colors.white70),
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: surface,
         elevation: 0,
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
