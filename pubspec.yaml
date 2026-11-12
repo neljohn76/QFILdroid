@@ -1,0 +1,30 @@
+name: qfildroid
+description: >-
+  QFILdroid - a Qualcomm EDL (Emergency Download) firmware servicing
+  workstation running on Android. USB OTG host connectivity, Sahara and
+  Firehose protocol engines, firmware package management and validated
+  flashing workflows.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.2
+  crypto: ^3.0.3
+  xml: ^6.5.0
+  path: ^1.9.0
+  archive: ^3.6.1
+  file_picker: ^8.0.6
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
