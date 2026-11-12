@@ -1,0 +1,60 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - 'vibe/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Static analysis
+        run: flutter analyze
+
+      - name: Dart unit tests
+        run: flutter test
+
+      - name: C++ engine host tests
+        run: |
+          cd android/app/src/main/cpp/tests
+          cmake -S . -B build
+          cmake --build build
+          ./build/engine_tests
+
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qfildroid-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+
+      - name: Attach APK to ci-build release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ci-build
+          name: CI test builds
+          prerelease: true
+          files: build/app/outputs/flutter-apk/app-debug.apk
