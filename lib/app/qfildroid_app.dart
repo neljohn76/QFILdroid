@@ -115,6 +115,13 @@ class _HomeShellState extends State<HomeShell> {
           ],
         ),
         actions: [
+          Builder(
+            builder: (buttonContext) => IconButton(
+              tooltip: 'Settings and appearance',
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () => Scaffold.of(buttonContext).openEndDrawer(),
+            ),
+          ),
           IconButton(
             tooltip: 'Switch appearance mode',
             icon: Icon(modeIcon),
@@ -122,7 +129,7 @@ class _HomeShellState extends State<HomeShell> {
           ),
           const Padding(
             padding: EdgeInsets.only(right: 16),
-            child: Center(child: Text('v0.2.0', style: TextStyle(fontSize: 12))),
+            child: Center(child: Text('v0.2.1', style: TextStyle(fontSize: 12))),
           ),
         ],
       ),

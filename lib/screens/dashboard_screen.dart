@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../app/theme.dart';
 import '../models/connection_stage.dart';
@@ -135,6 +136,20 @@ class DashboardScreen extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
+                    IconButton(
+                      tooltip: 'Copy log to clipboard',
+                      icon: const Icon(Icons.copy, size: 18),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: logs.exportText()));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Copied ${logs.entries.length} log entries to clipboard',
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                     Text(
                       '${logs.entries.length} entries',
                       style: TextStyle(color: scheme.outline, fontSize: 12),
