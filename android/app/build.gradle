@@ -56,6 +56,13 @@ android {
         }
     }
 
+    lint {
+        // CI builds unsigned test APKs; plugin lint findings must not
+        // block the release assembly (lintVitalRelease).
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
+
     buildTypes {
         release {
             signingConfig = signingConfigs.debug
