@@ -44,8 +44,8 @@ class _FirmwareFlasherScreenState extends State<FirmwareFlasherScreen> {
       dialogTitle: 'Select rawprogram XML',
       type: FileType.any,
     );
-    if (!mounted) return;
-    final path = result?.files.single.path;
+    if (!mounted || result == null || result.files.isEmpty) return;
+    final path = result.files.single.path;
     if (path != null) {
       setState(() => _rawprogramController.text = path);
     }

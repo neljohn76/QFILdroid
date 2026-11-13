@@ -9,7 +9,7 @@ class ThemeProvider extends ChangeNotifier {
   ThemeProvider({
     this.themeMode = ThemeMode.system,
     int accentIndex = 0,
-  }) : _accentIndex = accentIndex;
+  }) : _accentIndex = _safeAccent(accentIndex);
 
   static const String _modeKey = 'theme.mode';
   static const String _accentKey = 'theme.accent';
@@ -19,9 +19,22 @@ class ThemeProvider extends ChangeNotifier {
 
   int get accentIndex => _accentIndex;
 
-  Color get seedColor =>
-      QfildroidTheme.accents[_accentIndex.clamp(0, QfildroidTheme.accents.length - 1)]
-          .color;
+  Color get seedColor => QfildroidTheme.accents[_accentIndex].color;
+
+  static int _safeAccent(int index) {
+    if (index < 0) return 0;
+    if (index >= QfildroidTheme.accents.length) {
+      return QfildroidTheme.accents.length - 1;
+    }
+    return index;
+  }
+
+  static ThemeMode _safeMode(int index) {
+    if (index < 0 || index >= ThemeMode.values.length) {
+      return ThemeMode.system;
+    }
+    return ThemeMode.values[index];
+  }
 
   /// Loads persisted preferences; falls back to system brightness and the
   /// QFIL green accent.
@@ -30,9 +43,8 @@ class ThemeProvider extends ChangeNotifier {
     final modeIndex = prefs.getInt(_modeKey) ?? ThemeMode.system.index;
     final accentIndex = prefs.getInt(_accentKey) ?? 0;
     return ThemeProvider(
-      themeMode: ThemeMode
-          .values[modeIndex.clamp(0, ThemeMode.values.length - 1)],
-      accentIndex: accentIndex.clamp(0, QfildroidTheme.accents.length - 1),
+      themeMode: _safeMode(modeIndex),
+      accentIndex: accentIndex,
     );
   }
 
@@ -45,7 +57,7 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   Future<void> setAccent(int index) async {
-    final clamped = index.clamp(0, QfildroidTheme.accents.length - 1);
+    final clamped = _safeAccent(index);
     if (_accentIndex == clamped) return;
     _accentIndex = clamped;
     notifyListeners();
