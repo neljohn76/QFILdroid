@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -53,13 +53,22 @@ jobs:
           ./build/engine_tests
 
       - name: Build release APKs (split per ABI)
-        run: flutter build apk --release --split-per-abi
+        run: set -o pipefail; flutter build apk --release --split-per-abi 2>&1 | tee build_log.txt
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: qfildroid-release-apks
           path: build/app/outputs/flutter-apk/*-release.apk
+
+      - name: Attach build log to release on failure
+        if: failure()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ci-build
+          name: CI test builds
+          prerelease: true
+          files: build_log.txt
 
       - name: Attach APKs to ci-build release
         uses: softprops/action-gh-release@v2
