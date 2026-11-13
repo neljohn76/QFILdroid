@@ -1,0 +1,83 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - 'vibe/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate launcher icons from brand SVG
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
+          rsvg-convert -w 1024 -h 1024 assets/icon/qfildroid_icon.svg -o assets/icon/icon.png
+          rsvg-convert -w 432 -h 432 assets/icon/qfildroid_icon_foreground.svg -o assets/icon/icon_foreground.png
+          dart run flutter_launcher_icons
+
+      - name: Static analysis
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Dart unit tests
+        run: flutter test
+
+      - name: C++ engine host tests
+        run: |
+          cd android/app/src/main/cpp/tests
+          cmake -S . -B build
+          cmake --build build
+          ./build/engine_tests
+
+      - name: Build release APKs (split per ABI)
+        run: set -o pipefail; flutter build apk --release --split-per-abi 2>&1 | tee build_log.txt
+
+      - name: Commit build log tail on failure
+        if: failure() && github.event_name == 'push'
+        run: |
+          tail -c 30000 build_log.txt > build_log_tail.txt
+          git config user.name "qfildroid-ci"
+          git config user.email "qfildroid-ci@users.noreply.github.com"
+          git add -f build_log_tail.txt
+          git commit -m "CI: build log tail [skip ci]"
+          git push origin HEAD:vibe/qfildroid-phase1-foundation-30c681
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: qfildroid-release-apks
+          path: build/app/outputs/flutter-apk/*-release.apk
+
+      - name: Attach APKs to ci-build release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ci-build
+          name: CI test builds
+          prerelease: true
+          files: |
+            build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+            build/app/outputs/flutter-apk/app-x86_64-release.apk

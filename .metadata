@@ -1,0 +1,4 @@
+# This file tracks properties of this Flutter project.
+# Used by the 'flutter' tool to assess capabilities and perform upgrades.
+project:
+  type: app
