@@ -14,6 +14,7 @@ class EdlModeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<DeviceProvider>();
     final handshake = provider.handshake;
+    final scheme = Theme.of(context).colorScheme;
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
@@ -38,7 +39,7 @@ class EdlModeScreen extends StatelessWidget {
                 const Divider(height: 24),
                 Text(
                   provider.edlStatusText,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
                 ),
                 const SizedBox(height: 16),
                 FilledButton.icon(
@@ -82,10 +83,11 @@ class EdlModeScreen extends StatelessWidget {
                 ),
                 const Divider(height: 24),
                 if (handshake == null)
-                  const Text(
+                  Text(
                     'No handshake performed yet. Connect to the device to '
                     'verify EDL mode.',
-                    style: TextStyle(color: Colors.white54, fontSize: 13),
+                    style: TextStyle(
+                        color: scheme.onSurfaceVariant, fontSize: 13),
                   )
                 else ...[
                   InfoRow(
@@ -117,17 +119,17 @@ class EdlModeScreen extends StatelessWidget {
             ),
           ),
         ),
-        const Card(
+        Card(
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Safety Notes',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                Divider(height: 24),
+                const Divider(height: 24),
                 Text(
                   '• VID/PID match alone never proves EDL mode; only a '
                   'successful Sahara handshake does.\n'
@@ -135,7 +137,7 @@ class EdlModeScreen extends StatelessWidget {
                   'Firmware Flasher with an authorized programmer.\n'
                   '• QFILdroid does not bypass secure boot or OEM '
                   'authentication.',
-                  style: TextStyle(color: Colors.white54, fontSize: 13),
+                  style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
                 ),
               ],
             ),

@@ -8,7 +8,6 @@ import '../services/log_service.dart';
 import '../widgets/info_row.dart';
 import '../widgets/status_badge.dart';
 
-
 /// Technician dashboard: connection state, device info, EDL detection and
 /// recent diagnostics.
 class DashboardScreen extends StatelessWidget {
@@ -18,6 +17,7 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final device = context.watch<DeviceProvider>();
     final logs = context.watch<LogService>();
+    final scheme = Theme.of(context).colorScheme;
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
@@ -50,10 +50,10 @@ class DashboardScreen extends StatelessWidget {
                 ),
                 const Divider(height: 24),
                 if (device.selectedDevice == null)
-                  const Text(
+                  Text(
                     'No USB device connected. Attach a device via OTG or '
                     'USB-C host mode.',
-                    style: TextStyle(color: Colors.white54),
+                    style: TextStyle(color: scheme.onSurfaceVariant),
                   )
                 else ...[
                   InfoRow(
@@ -99,7 +99,7 @@ class DashboardScreen extends StatelessWidget {
                 const Divider(height: 24),
                 Text(
                   device.edlStatusText,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -111,7 +111,7 @@ class DashboardScreen extends StatelessWidget {
                   style: TextStyle(
                     color: device.handshake?['ok'] == true
                         ? QfildroidTheme.success
-                        : Colors.white54,
+                        : scheme.onSurfaceVariant,
                     fontSize: 13,
                   ),
                 ),
@@ -137,16 +137,15 @@ class DashboardScreen extends StatelessWidget {
                     const Spacer(),
                     Text(
                       '${logs.entries.length} entries',
-                      style: const TextStyle(
-                          color: Colors.white38, fontSize: 12),
+                      style: TextStyle(color: scheme.outline, fontSize: 12),
                     ),
                   ],
                 ),
                 const Divider(height: 24),
                 if (logs.entries.isEmpty)
-                  const Text(
+                  Text(
                     'No events recorded yet.',
-                    style: TextStyle(color: Colors.white54),
+                    style: TextStyle(color: scheme.onSurfaceVariant),
                   )
                 else
                   ...logs.entries.reversed.take(6).map(
@@ -175,16 +174,16 @@ class _LogLine extends StatelessWidget {
 
   final LogEntry entry;
 
-  Color get _color {
+  Color _color(ColorScheme scheme) {
     switch (entry.level) {
       case LogLevel.error:
         return QfildroidTheme.danger;
       case LogLevel.warning:
         return QfildroidTheme.warning;
       case LogLevel.info:
-        return Colors.white70;
+        return scheme.onSurface;
       case LogLevel.debug:
-        return Colors.white38;
+        return scheme.outline;
     }
   }
 
@@ -197,7 +196,7 @@ class _LogLine extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'monospace',
           fontSize: 11,
-          color: _color,
+          color: _color(Theme.of(context).colorScheme),
         ),
       ),
     );

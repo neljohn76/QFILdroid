@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../app/theme.dart';
 import '../models/log_entry.dart';
 import '../providers/device_provider.dart';
 import '../services/log_service.dart';
-
 
 /// Diagnostic log viewer with category filter and export.
 class LogsScreen extends StatefulWidget {
@@ -111,9 +111,12 @@ class _LogsScreenState extends State<LogsScreen> {
         const Divider(height: 1),
         Expanded(
           child: entries.isEmpty
-              ? const Center(
-                  child: Text('No log entries',
-                      style: TextStyle(color: Colors.white38)),
+              ? Center(
+                  child: Text(
+                    'No log entries',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.outline),
+                  ),
                 )
               : ListView.builder(
                   padding: const EdgeInsets.all(8),
@@ -134,16 +137,16 @@ class _LogTile extends StatelessWidget {
 
   final LogEntry entry;
 
-  Color get _color {
+  Color _color(ColorScheme scheme) {
     switch (entry.level) {
       case LogLevel.error:
-        return const Color(0xFFF85149);
+        return QfildroidTheme.danger;
       case LogLevel.warning:
-        return const Color(0xFFD29922);
+        return QfildroidTheme.warning;
       case LogLevel.info:
-        return Colors.white70;
+        return scheme.onSurface;
       case LogLevel.debug:
-        return Colors.white38;
+        return scheme.outline;
     }
   }
 
@@ -156,7 +159,7 @@ class _LogTile extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'monospace',
           fontSize: 11,
-          color: _color,
+          color: _color(Theme.of(context).colorScheme),
         ),
       ),
     );

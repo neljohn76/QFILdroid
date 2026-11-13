@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../app/theme.dart';
 import '../models/usb_device_info.dart';
 import '../providers/device_provider.dart';
 import '../services/edl_identifier.dart';
@@ -32,14 +33,13 @@ class _DeviceManagerScreenState extends State<DeviceManagerScreen> {
       onRefresh: provider.refreshDevices,
       child: provider.devices.isEmpty
           ? ListView(
-              children: const [
-                Padding(
+              children: [
+                const Padding(
                   padding: EdgeInsets.all(32),
                   child: Center(
                     child: Text(
                       'No USB devices attached.\nPull to refresh.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white54),
                     ),
                   ),
                 ),
@@ -82,10 +82,11 @@ class _DeviceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final candidate = EdlIdentifier.isEdlCandidate(device);
+    final scheme = Theme.of(context).colorScheme;
     return Card(
       child: InkWell(
         onTap: onSelect,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -96,8 +97,8 @@ class _DeviceCard extends StatelessWidget {
                   Icon(
                     candidate ? Icons.warning_amber_outlined : Icons.usb,
                     color: candidate
-                        ? Theme.of(context).colorScheme.secondary
-                        : Colors.white54,
+                        ? scheme.primary
+                        : scheme.onSurfaceVariant,
                     size: 20,
                   ),
                   const SizedBox(width: 8),
@@ -108,8 +109,8 @@ class _DeviceCard extends StatelessWidget {
                     ),
                   ),
                   if (selected)
-                    const Icon(Icons.check_circle,
-                        size: 18, color: Colors.green),
+                    Icon(Icons.check_circle,
+                        size: 18, color: QfildroidTheme.success),
                 ],
               ),
               const SizedBox(height: 8),
@@ -127,7 +128,7 @@ class _DeviceCard extends StatelessWidget {
                     'Qualcomm EDL candidate (handshake required to confirm)',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: scheme.primary,
                     ),
                   ),
                 ),
@@ -155,6 +156,7 @@ class _InterfaceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -169,10 +171,10 @@ class _InterfaceList extends StatelessWidget {
                   '(class 0x${iface.interfaceClass.toRadixString(16).padLeft(2, '0')}, '
                   'subclass 0x${iface.interfaceSubclass.toRadixString(16).padLeft(2, '0')}, '
                   'protocol 0x${iface.interfaceProtocol.toRadixString(16).padLeft(2, '0')})',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'monospace',
                     fontSize: 12,
-                    color: Colors.white70,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
                 for (final endpoint in iface.endpoints)
@@ -181,10 +183,10 @@ class _InterfaceList extends StatelessWidget {
                     child: Text(
                       'EP${endpoint.endpointNumber} ${endpoint.direction} '
                       '${endpoint.type} maxPacket=${endpoint.maxPacketSize}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'monospace',
                         fontSize: 11,
-                        color: Colors.white38,
+                        color: scheme.outline,
                       ),
                     ),
                   ),
