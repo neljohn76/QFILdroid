@@ -55,20 +55,21 @@ jobs:
       - name: Build release APKs (split per ABI)
         run: set -o pipefail; flutter build apk --release --split-per-abi 2>&1 | tee build_log.txt
 
+      - name: Commit build log tail on failure
+        if: failure() && github.event_name == 'push'
+        run: |
+          tail -c 30000 build_log.txt > build_log_tail.txt
+          git config user.name "qfildroid-ci"
+          git config user.email "qfildroid-ci@users.noreply.github.com"
+          git add -f build_log_tail.txt
+          git commit -m "CI: build log tail [skip ci]"
+          git push origin HEAD:vibe/qfildroid-phase1-foundation-30c681
+
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: qfildroid-release-apks
           path: build/app/outputs/flutter-apk/*-release.apk
-
-      - name: Attach build log to release on failure
-        if: failure()
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ci-build
-          name: CI test builds
-          prerelease: true
-          files: build_log.txt
 
       - name: Attach APKs to ci-build release
         uses: softprops/action-gh-release@v2
