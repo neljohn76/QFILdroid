@@ -21,7 +21,10 @@ class QfildroidRoot extends StatelessWidget {
       providers: [
         Provider<UsbService>(create: (_) => UsbService()),
         Provider<ProtocolService>(create: (_) => ProtocolService()),
-        Provider<LogService>(create: (_) => LogService()),
+        // LogService extends ChangeNotifier, so it must be exposed through a
+        // ChangeNotifierProvider. A plain Provider throws at startup:
+        // "Tried to use Provider with a subtype of Listenable/Stream".
+        ChangeNotifierProvider<LogService>(create: (_) => LogService()),
         ChangeNotifierProvider<DeviceProvider>(
           create: (context) => DeviceProvider(
             usbService: context.read<UsbService>(),
