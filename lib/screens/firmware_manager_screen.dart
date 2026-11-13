@@ -8,7 +8,6 @@ import '../services/firmware/firmware_inspector.dart';
 import '../services/log_service.dart';
 import '../widgets/info_row.dart';
 
-
 /// Firmware Manager: package inspection screen (directory or ZIP).
 ///
 /// Shows programmers, rawprogram/patch XML files and SHA-256 digests before
@@ -52,6 +51,7 @@ class _FirmwareManagerScreenState extends State<FirmwareManagerScreen> {
   @override
   Widget build(BuildContext context) {
     final package = _package;
+    final scheme = Theme.of(context).colorScheme;
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
       children: [
@@ -66,12 +66,13 @@ class _FirmwareManagerScreenState extends State<FirmwareManagerScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const Divider(height: 24),
-                const Text(
+                Text(
                   'Select an extracted firmware directory. QFILdroid lists '
                   'programmers, rawprogram/patch XML files and computes '
                   'SHA-256 digests. Nothing is uploaded or executed from '
                   'this screen.',
-                  style: TextStyle(color: Colors.white54, fontSize: 13),
+                  style: TextStyle(
+                      color: scheme.onSurfaceVariant, fontSize: 13),
                 ),
                 const SizedBox(height: 12),
                 FilledButton.icon(
@@ -96,6 +97,7 @@ class _PackageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -107,10 +109,10 @@ class _PackageCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     package.rootPath,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontFamily: 'monospace',
-                      color: Colors.white70,
+                      color: scheme.onSurfaceVariant,
                     ),
                   ),
                 ),
@@ -127,13 +129,13 @@ class _PackageCard extends StatelessWidget {
             if (package.errors.isNotEmpty)
               ...package.errors.map(
                 (e) => Text('✖ $e',
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: QfildroidTheme.danger, fontSize: 12)),
               ),
             if (package.warnings.isNotEmpty)
               ...package.warnings.map(
                 (w) => Text('⚠ $w',
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: QfildroidTheme.warning, fontSize: 12)),
               ),
             const SizedBox(height: 8),

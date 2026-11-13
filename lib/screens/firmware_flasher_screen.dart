@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../app/theme.dart';
@@ -10,7 +11,6 @@ import '../providers/device_provider.dart';
 import '../services/firmware/xml_parser.dart';
 import '../services/flash_planner.dart';
 import '../services/log_service.dart';
-
 
 /// Staged firmware flashing workflow.
 ///
@@ -37,12 +37,26 @@ class _FirmwareFlasherScreenState extends State<FirmwareFlasherScreen> {
     super.dispose();
   }
 
+  /// Opens the system document picker (Storage Access Framework) so no
+  /// storage permission is required.
+  Future<void> _pickRawprogram() async {
+    final result = await FilePicker.platform.pickFiles(
+      dialogTitle: 'Select rawprogram XML',
+      type: FileType.any,
+    );
+    if (!mounted) return;
+    final path = result?.files.single.path;
+    if (path != null) {
+      setState(() => _rawprogramController.text = path);
+    }
+  }
+
   Future<void> _buildPlan() async {
     final provider = context.read<DeviceProvider>();
     final log = context.read<LogService>();
     final path = _rawprogramController.text.trim();
     if (path.isEmpty) {
-      setState(() => _planError = 'Enter the path to a rawprogram XML file');
+      setState(() => _planError = 'Pick a rawprogram XML file first');
       return;
     }
 
@@ -110,6 +124,7 @@ class _FirmwareFlasherScreenState extends State<FirmwareFlasherScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<DeviceProvider>();
+    final scheme = Theme.of(context).colorScheme;
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
@@ -127,14 +142,20 @@ class _FirmwareFlasherScreenState extends State<FirmwareFlasherScreen> {
                 const Divider(height: 24),
                 Text(
                   'Stage: ${provider.stage.label}',
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  style: TextStyle(
+                      color: scheme.onSurfaceVariant, fontSize: 13),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: _rawprogramController,
-                  decoration: const InputDecoration(
-                    labelText: 'rawprogram XML path',
-                    hintText: '/sdcard/firmware/rawprogram0.xml',
+                  decoration: InputDecoration(
+                    labelText: 'rawprogram XML file',
+                    hintText: 'Pick rawprogram0.xml from device storage',
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.folder_open),
+                      tooltip: 'Browse files (SAF)',
+                      onPressed: _pickRawprogram,
+                    ),
                   ),
                 ),
                 SwitchListTile(
@@ -156,7 +177,7 @@ class _FirmwareFlasherScreenState extends State<FirmwareFlasherScreen> {
                   const SizedBox(height: 12),
                   Text(
                     _planError!,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: QfildroidTheme.danger, fontSize: 13),
                   ),
                 ],
@@ -177,6 +198,7 @@ class _PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -200,7 +222,7 @@ class _PlanCard extends StatelessWidget {
                 const Spacer(),
                 Text(
                   '${plan.validCount} valid / ${plan.entries.length} total',
-                  style: const TextStyle(color: Colors.white54, fontSize: 12),
+                  style: TextStyle(color: scheme.outline, fontSize: 12),
                 ),
               ],
             ),
@@ -210,7 +232,7 @@ class _PlanCard extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   '⚠ $w',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: QfildroidTheme.warning,
                     fontSize: 12,
                   ),
@@ -222,7 +244,8 @@ class _PlanCard extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   '✖ $e',
-                  style: TextStyle(color: QfildroidTheme.danger, fontSize: 12),
+                  style: const TextStyle(
+                      color: QfildroidTheme.danger, fontSize: 12),
                 ),
               ),
             ),
@@ -235,7 +258,9 @@ class _PlanCard extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'monospace',
                     fontSize: 11,
-                    color: entry.isValid ? Colors.white70 : QfildroidTheme.danger,
+                    color: entry.isValid
+                        ? scheme.onSurfaceVariant
+                        : QfildroidTheme.danger,
                   ),
                 ),
               ),

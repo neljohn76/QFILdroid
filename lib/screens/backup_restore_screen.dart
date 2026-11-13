@@ -5,7 +5,6 @@ import '../models/log_entry.dart';
 import '../providers/device_provider.dart';
 import '../services/log_service.dart';
 
-
 /// Backup & Restore: partition readback planning with validation.
 ///
 /// Only readback (backup) is offered here. Restore writes require the same
@@ -67,6 +66,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return ListView(
       padding: const EdgeInsets.only(bottom: 24),
       children: [
@@ -81,11 +81,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const Divider(height: 24),
-                const Text(
+                Text(
                   'Backups read sector ranges from the device via the '
                   'validated programmer. Verify the range against the '
                   'partition table before proceeding.',
-                  style: TextStyle(color: Colors.white54, fontSize: 13),
+                  style: TextStyle(
+                      color: scheme.onSurfaceVariant, fontSize: 13),
                 ),
                 const SizedBox(height: 12),
                 TextField(
@@ -127,7 +128,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                     padding: const EdgeInsets.only(top: 12),
                     child: Text(
                       _validation!,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: QfildroidTheme.warning, fontSize: 13),
                     ),
                   ),
@@ -146,23 +147,24 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
             ),
           ),
         ),
-        const Card(
+        Card(
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Restore',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                Divider(height: 24),
+                const Divider(height: 24),
                 Text(
                   'Restore writes are intentionally disabled in this build. '
                   'They will be enabled together with the full flash '
                   'validation chain (programmer validation, storage geometry '
                   'checks, integrity verification and confirmation).',
-                  style: TextStyle(color: Colors.white54, fontSize: 13),
+                  style: TextStyle(
+                      color: scheme.onSurfaceVariant, fontSize: 13),
                 ),
               ],
             ),

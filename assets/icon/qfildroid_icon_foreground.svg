@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <g transform="translate(512 512) scale(0.6) translate(-512 -512)">
+    <path d="M 255 655 C 255 480 340 452 470 452 L 615 452 C 688 452 688 370 615 370 L 545 370"
+          fill="none" stroke="#2BE4A6" stroke-width="86" stroke-linecap="round"/>
+    <rect x="168" y="596" width="88" height="118" rx="20" fill="#2BE4A6"/>
+    <rect x="468" y="283" width="208" height="178" rx="58" fill="#2BE4A6"/>
+    <rect x="674" y="316" width="60" height="112" rx="14" fill="#2BE4A6"/>
+    <path d="M 700 210 h 200 v 225 h 90 L 800 645 L 610 435 h 90 Z" fill="#17C37B"/>
+    <circle cx="352" cy="712" r="62" fill="none" stroke="#FFFFFF" stroke-width="26"/>
+    <line x1="396" y1="756" x2="432" y2="792" stroke="#FFFFFF" stroke-width="26" stroke-linecap="round"/>
+    <text x="468" y="744" font-family="DejaVu Sans, sans-serif" font-size="98" font-weight="600" fill="#FFFFFF">FILdroid</text>
+  </g>
+</svg>
