@@ -15,6 +15,7 @@ class InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
@@ -24,7 +25,10 @@ class InfoRow extends StatelessWidget {
             width: 130,
             child: Text(
               label,
-              style: const TextStyle(color: Colors.white54, fontSize: 13),
+              style: TextStyle(
+                color: scheme.onSurfaceVariant,
+                fontSize: 13,
+              ),
             ),
           ),
           Expanded(
@@ -33,7 +37,7 @@ class InfoRow extends StatelessWidget {
               style: TextStyle(
                 fontFamily: mono ? 'monospace' : null,
                 fontSize: 13,
-                color: Colors.white,
+                color: scheme.onSurface,
               ),
             ),
           ),

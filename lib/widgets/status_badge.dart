@@ -13,10 +13,10 @@ class StatusBadge extends StatelessWidget {
   static Color colorFor(ConnectionStage stage) {
     switch (stage) {
       case ConnectionStage.disconnected:
-        return Colors.white38;
+        return QfildroidTheme.muted;
       case ConnectionStage.usbConnected:
       case ConnectionStage.permissionRequired:
-        return QfildroidTheme.secondary;
+        return QfildroidTheme.info;
       case ConnectionStage.edlCandidateDetected:
         return QfildroidTheme.warning;
       case ConnectionStage.protocolConnected:
@@ -24,7 +24,7 @@ class StatusBadge extends StatelessWidget {
       case ConnectionStage.readyForAuthorizedOperation:
         return QfildroidTheme.success;
       case ConnectionStage.operationInProgress:
-        return QfildroidTheme.secondary;
+        return QfildroidTheme.info;
       case ConnectionStage.operationFailed:
         return QfildroidTheme.danger;
       case ConnectionStage.operationCompleted:

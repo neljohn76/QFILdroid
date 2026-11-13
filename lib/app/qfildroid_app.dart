@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/device_provider.dart';
+import '../providers/theme_provider.dart';
 import '../screens/backup_restore_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/device_manager_screen.dart';
@@ -13,17 +14,20 @@ import '../screens/partition_manager_screen.dart';
 import '../screens/settings_screen.dart';
 import 'theme.dart';
 
-/// Root widget: Material 3 dark shell with the 9-screen technician
-/// navigation.
+/// Root widget: Material 3 shell following the user's selected brightness
+/// mode and accent color.
 class QfildroidApp extends StatelessWidget {
   const QfildroidApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
     return MaterialApp(
       title: 'QFILdroid',
       debugShowCheckedModeBanner: false,
-      theme: QfildroidTheme.dark(),
+      theme: QfildroidTheme.light(theme.seedColor),
+      darkTheme: QfildroidTheme.dark(theme.seedColor),
+      themeMode: theme.themeMode,
       home: const HomeShell(),
     );
   }
@@ -67,9 +71,24 @@ class _HomeShellState extends State<HomeShell> {
     });
   }
 
+  Future<void> _cycleThemeMode() async {
+    final theme = context.read<ThemeProvider>();
+    const order = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
+    final next = order[(order.indexOf(theme.themeMode) + 1) % order.length];
+    await theme.setThemeMode(next);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeProvider>();
+    final scheme = Theme.of(context).colorScheme;
     final destinations = _destinations;
+    final modeIcon = switch (theme.themeMode) {
+      ThemeMode.system => Icons.brightness_auto_outlined,
+      ThemeMode.light => Icons.light_mode_outlined,
+      ThemeMode.dark => Icons.dark_mode_outlined,
+    };
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -78,14 +97,14 @@ class _HomeShellState extends State<HomeShell> {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: QfildroidTheme.primary,
+                color: scheme.primary,
                 borderRadius: BorderRadius.circular(8),
               ),
               alignment: Alignment.center,
-              child: const Text(
+              child: Text(
                 'Q',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: scheme.onPrimary,
                   fontWeight: FontWeight.w900,
                   fontSize: 16,
                 ),
@@ -96,9 +115,14 @@ class _HomeShellState extends State<HomeShell> {
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'Switch appearance mode',
+            icon: Icon(modeIcon),
+            onPressed: _cycleThemeMode,
+          ),
           const Padding(
             padding: EdgeInsets.only(right: 16),
-            child: Center(child: Text('v0.1.0', style: TextStyle(fontSize: 12))),
+            child: Center(child: Text('v0.2.0', style: TextStyle(fontSize: 12))),
           ),
         ],
       ),
@@ -116,13 +140,17 @@ class _HomeShellState extends State<HomeShell> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: QfildroidTheme.surface),
+            DrawerHeader(
+              decoration: BoxDecoration(color: scheme.primaryContainer),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   'QFILdroid',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: scheme.onPrimaryContainer,
+                  ),
                 ),
               ),
             ),
